@@ -1,26 +1,57 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Messages from './components/Messages';
+import Input from './components/Input';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+//Redux Stuff
+import {fizzConnect} from './redux/actionsCreators';
+import { connect, Provider } from 'react-redux';
+
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    this.props.fizzConnect();
+  }
+
+  render () {
+    const { locale, roomId, userId } = this.props;
+    return (
+      (roomId.length > 0 && userId.length > 0) 
+      ? 
+        <div className="App">
+          <Messages locale={locale} roomId={roomId} sessionUserId={userId}  />
+          <Input {...{ locale, roomId } } />
+        </div>
+      :
+        <div>
+          Please check url parameters for <b>roomId</b> and <b>userId</b>
+        </div>
+    );
+  }
 }
+const mapStateToProps = (state) => {
+  const location = window.location || { search: '' };
+  const urlParams = new URLSearchParams(location.search);
 
-export default App;
+  const roomId = urlParams.get('roomId') || '';
+  const userId = urlParams.get('userId') || '';
+  const locale = urlParams.get('locale') || 'en';
+  return {
+    UI: state.UI,
+    roomId, locale, userId
+  }
+};
+
+export default connect(
+  mapStateToProps,
+  { fizzConnect }
+)(App);
+
+
+
+
+// export default App;
