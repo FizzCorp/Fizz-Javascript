@@ -1,11 +1,21 @@
 import { MESSAGE_STATE } from '../constants';
 import moment from 'moment'
+import {
+  CONNECTED,
+  DISCONNECTED,
+  MESSAGE_PUBLISHED,
+  MESSAGE_UPDATED,
+  MESSAGE_DELETED,
+  MESSAGES_FETCHED,
+  SENDING_MESSAGE,
+  SENDING_MESSAGE_FAILURE
+ } from './actions'; 
+
 
 const FizzClient  = require('fizz-client');
 const APP_ID = "751326fc-305b-4aef-950a-074c9a21d461";
 const APP_SECRET = "5c963d03-64e6-439a-b2a9-31db60dd0b34";
-
-const { actions } = require('./actions');
+let client;
 
 const generateMessageJson = (params) => {
   const _id = moment().valueOf();
@@ -22,7 +32,45 @@ const generateMessageJson = (params) => {
   };
 }
 
-let client;
+const connected = () => {
+  return { type: CONNECTED };
+};
+
+const disconnected = () => {
+  return { type: DISCONNECTED };
+};
+
+const messagesFetched = (messages) => {
+  return { type: MESSAGES_FETCHED, messages};
+};
+
+const messagePublished = (message) => {
+  return { type: MESSAGE_PUBLISHED, message };
+};
+
+const messageUpdated = (message) => {
+  return { type: MESSAGE_UPDATED, message };
+};
+
+const messageDeleted = (message) => {
+  return { type: MESSAGE_DELETED, message };
+};
+
+const sendingMessage = (message) => {
+  return { type: SENDING_MESSAGE, message }
+};
+
+const sendingMessageFailure = (message) => {
+  return { type: SENDING_MESSAGE_FAILURE, message }
+};
+
+/* if further state updation needed on promise success */
+/*
+const sendingMessageSuccess = (message) => {
+  return { type: SENDING_MESSAGE_SUCCESS, message }
+};
+*/
+
 
 export const fizzConnect = (roomId, userId, locale) => (dispatch) => {
 
@@ -34,7 +82,7 @@ export const fizzConnect = (roomId, userId, locale) => (dispatch) => {
     client.chat.on('connected', async (syncRequired) => {
 
       // Update state on UI (e.g. enable message input field)
-      dispatch(actions.connected());
+      dispatch(connected());
 
       try {
           if (syncRequired) { // Sync client state, always subscribe in connected listener
@@ -44,7 +92,7 @@ export const fizzConnect = (roomId, userId, locale) => (dispatch) => {
               let messages = await client.chat.queryLatest(roomId, 50);
 
               // Update messages on UI
-              dispatch(actions.messagesFetched(messages));
+              dispatch(messagesFetched(messages));
           }
       }
       catch(err) {
@@ -55,22 +103,22 @@ export const fizzConnect = (roomId, userId, locale) => (dispatch) => {
     // Hook disconnected event. Fired everytime the client disconnects from the message broker.
     client.chat.on('disconnected', () => {
       // update state on UI (e.g. disable message input field)
-      dispatch(actions.disconnected());
+      dispatch(disconnected());
     });
     // Hook the messagePublished event. Fired everytime a message is published to a subscribed channel.
     client.chat.on('messagePublished', message => {
       // update state on UI (append message to channel message list control)
-      dispatch(actions.messagePublished(message));
+      dispatch(messagePublished(message));
     });
     // Hook the messageUpdated event. Fired everytime a message is updated in a subscribed channel.
     client.chat.on('messageUpdated', message => {
       // update state on UI (update message in channel message list control)
-      dispatch(actions.messageUpdated(message));
+      dispatch(messageUpdated(message));
     });
     // Hook the messageDeleted event. Fired everytime a message is deleted from a subscribed channel.
     client.chat.on('messageDeleted', message => {
       // update state on UI (delete message from channel message list control)
-      dispatch(actions.messageDeleted(message));
+      dispatch(messageDeleted(message));
     });
 
   })();
@@ -85,14 +133,14 @@ export const sendMessage = (params = {}) => (dispatch) => {
     const messageItem = generateMessageJson(params);
   
     const { _to, _body, _nick } = messageItem;
-    dispatch(actions.sendingMessage(messageItem));
+    dispatch(sendingMessage(messageItem));
 
     try {
       await client.chat.publishMessage(_to, _nick, _body, JSON.stringify({ _refId: messageItem._id }), true, true, true);
     }
     catch (err) {
       messageItem._status = MESSAGE_STATE.FAILED
-      dispatch(actions.sendingMessageFailure(messageItem));
+      dispatch(sendingMessageFailure(messageItem));
     };
     
 
