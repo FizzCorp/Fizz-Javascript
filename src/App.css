@@ -42,4 +42,59 @@ body .App {
   background-color: #ffffffe0;
 } 
 
+.chat-controls-container {
+  width: 100%;
+  margin-top: 5px;
+  display: flex;
+  align-self: flex-end;
+  align-items: center;
+  flex-direction: row;
+  background: #eeeeee;
+  justify-content: center;
+  box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
+  border-radius: .28571429rem;
+  border: 1px solid rgba(34,36,38,.15);
+}
 
+#w-input-container {
+  width: 95%;
+  min-height: 20px;
+  margin: 5px 10px;
+  border-radius: 21px;
+  box-sizing: border-box;
+  padding: 9px 18px 11px;
+  background-color: #fff;
+  border: 1px solid #fff;
+}
+
+.w-input-text-group {
+  position: relative;
+}
+
+#w-input-text {
+  z-index: 1;
+  outline: 0;
+  overflow-y: auto;
+  min-height: 20px;
+  max-height: 72px;
+  padding: 0 0 0 2px;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  transition: 0.2s padding ease-in-out;
+}
+
+#w-input-text:empty + .w-placeholder {
+  opacity: 1;
+}
+
+.w-placeholder {
+  top: 0;
+  opacity: 0;
+  color: #a0a0a0;
+  -webkit-user-select: none;
+  user-select: none;
+  position: absolute;
+  pointer-events: none;
+  transition: 0.2s padding ease-in-out;
+}

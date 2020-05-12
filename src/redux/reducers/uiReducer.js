@@ -4,7 +4,8 @@ import {
  MESSAGE_PUBLISHED,
  MESSAGE_UPDATED,
  MESSAGE_DELETED,
- MESSAGES_FETCHED
+ MESSAGES_FETCHED,
+ SENDING_MESSAGE,
 } from '../actions'; 
 
 
@@ -21,10 +22,46 @@ export default function(state = initialState, action) {
       connected: true
     };
 
+    case DISCONNECTED: return {
+      ...state,
+      connected: false
+    };
+
     case MESSAGES_FETCHED: return {
       ...state,
       messages: Object.assign({}, action.messages.reduce((result, item) => { result[item._id] = item; return result; }, {}))
     }
+
+    case SENDING_MESSAGE: return {
+      ...state,
+      messages: {
+        ...state.messages,
+        ...{ [action.message._id]: action.message }
+      }
+    }
+
+    case MESSAGE_PUBLISHED: 
+      let data = action.message._data && JSON.parse(action.message._data);
+      let messageRefId = data && data._refId;
+      let messages = JSON.parse(JSON.stringify(state.messages));
+      if (messageRefId && messages[messageRefId]) delete messages[messageRefId];
+
+      return {
+        ...state,
+        messages: {
+          ...messages,
+          ...{ [action.message._id]: action.message }
+        }
+      };
+    
+    case MESSAGE_UPDATED: return {
+      ...state,
+      messages: {
+        ...state.messages,
+        ...{ [action.message._id]: action.message }
+      }
+    };
+
     
     default: return state;
   }

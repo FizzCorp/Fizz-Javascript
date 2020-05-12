@@ -1,3 +1,6 @@
+import { MESSAGE_STATE } from '../constants';
+import moment from 'moment'
+
 const FizzClient  = require('fizz-client');
 const APP_ID = "751326fc-305b-4aef-950a-074c9a21d461";
 const APP_SECRET = "5c963d03-64e6-439a-b2a9-31db60dd0b34";
@@ -5,11 +8,28 @@ const CHANNEL_ID = "global-channel";
 
 const { actions } = require('./actions');
 
-export const fizzConnect = () => (dispatch) => {
+const generateMessageJson = (params) => {
+  const _id = moment().valueOf();
+  const { nick, message, channelId } = params;
+  return {
+    _id,
+    _nick: nick,
+    _from: nick,
+    _created: _id,
+    _to: channelId,
+    _body: message,
+    _topic: channelId,
+    _status: MESSAGE_STATE.PENDING
+  };
+}
+
+let client;
+
+export const fizzConnect = (userId, locale) => (dispatch) => {
 
   (async () => {
-    
-    let client = await FizzClient.create(APP_ID, APP_SECRET, "userA", "en");
+    console.log("Received", userId, locale)
+    client = await FizzClient.create(APP_ID, APP_SECRET, userId, locale);
         
     // Hook connected event. Fired everytime the client connectes to the message broker.
     client.chat.on('connected', async (syncRequired) => {
@@ -57,10 +77,19 @@ export const fizzConnect = () => (dispatch) => {
   })();
 
 
-
 };
 
+export const sendMessage = (params = {}) => (dispatch) => {
+  
+  (async () => {
+    console.log("This should work", params);
+    const messageItem = generateMessageJson(params);
+  
+    const { _to, _body, _nick } = messageItem;
+    dispatch(actions.sendingMessage(messageItem));
+    
+    await client.chat.publishMessage(_to, _nick, _body, JSON.stringify({ _refId: messageItem._id }), true, true, true);
 
-// module.exports = {
-//   foo: () => console.log(1)
-// };
+  })();
+
+}

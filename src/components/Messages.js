@@ -145,8 +145,10 @@ const transformMessages = (params) => {
 
 export class Messages extends Component {
 
-  constructor(props) {
-    super(props);
+
+  componentDidUpdate(prevProps) {
+    const msgDiv = document.getElementsByClassName('fizz-messages')[0];
+    msgDiv.scrollTop = msgDiv.scrollHeight;
   }
 
   renderMessageList() {
@@ -177,7 +179,7 @@ export class Messages extends Component {
 const mapStateToProps = (state, props) => ({
   ...props,
   ...state.UI,
-  messages: Object.values(state.UI.messages)
+  // messages: Object.values(state.UI.messages)
 })
 
 const mapDispatchToProps = {

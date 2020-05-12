@@ -5,16 +5,14 @@ import Input from './components/Input';
 
 //Redux Stuff
 import {fizzConnect} from './redux/actionsCreators';
-import { connect, Provider } from 'react-redux';
+import { connect } from 'react-redux';
 
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
-    this.props.fizzConnect();
+    const { userId, locale } = this.props;
+    this.props.fizzConnect( userId, locale);
   }
 
   render () {
@@ -24,7 +22,7 @@ class App extends React.Component {
       ? 
         <div className="App">
           <Messages locale={locale} roomId={roomId} sessionUserId={userId}  />
-          <Input {...{ locale, roomId } } />
+          <Input {...{ locale, roomId, userId } } />
         </div>
       :
         <div>
