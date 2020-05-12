@@ -4,11 +4,14 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 # Run the project
 
-In the project directory, you can run:
+In the project directory, install dependencies and start project by running
 
-`npm start`
+- `npm install`
 
-Runs the app in the development mode.<br />
+- `npm start`
+
+App would start in development mode.
+
 Open [http://localhost:3000/?roomId=global-channel&userId=ht&locale=en](http://localhost:3000/?roomId=global-channel&userId=test&locale=en) to view it in the browser.
 
 # Project Structure
@@ -38,7 +41,7 @@ Starting with `src/index.js` the code is simple to navigate. Important files tha
 Contains all actions that would be dispatched.
 
 #### `redux/actionCreators`:
-Contains logic to handle all chat life cycle as shown in [Example](http://examplelink.com). Uses `APP_ID` and `APP_SECRET` for demo app and exposes following two dispatch  methods for components
+Contains logic to handle all chat life cycle as shown in [Example](https://docs.fizz.io/javascript/). Uses `APP_ID` and `APP_SECRET` for demo app and exposes following two dispatch  methods for components
 ##### `fizzConnect` 
 Connect with fizz server and handles all socket events, and dispatch respective state update actions.
 ##### `sendMessage`
