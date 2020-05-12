@@ -4,7 +4,7 @@ import Messages from './components/Messages';
 import Input from './components/Input';
 
 //Redux Stuff
-import {fizzConnect} from './redux/actionsCreators';
+import { fizzConnect } from './redux/actionsCreators';
 import { connect } from 'react-redux';
 
 

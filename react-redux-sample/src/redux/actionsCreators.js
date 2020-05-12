@@ -133,13 +133,16 @@ export const sendMessage = (params = {}) => (dispatch) => {
     const messageItem = generateMessageJson(params);
   
     const { _to, _body, _nick } = messageItem;
+    // Update UI with new message with pending state
     dispatch(sendingMessage(messageItem));
 
     try {
+      // Send the actual message, would be available later in a `messagePublished` socket event
       await client.chat.publishMessage(_to, _nick, _body, JSON.stringify({ _refId: messageItem._id }), true, true, true);
     }
     catch (err) {
       messageItem._status = MESSAGE_STATE.FAILED
+      // Update sent message state to failure
       dispatch(sendingMessageFailure(messageItem));
     };
     

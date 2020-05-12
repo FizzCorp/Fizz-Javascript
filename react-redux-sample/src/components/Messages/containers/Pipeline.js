@@ -125,14 +125,53 @@ const addSeperatators = (params) => {
   return temp;
 };
 
+/*
+  Pipline.js receives an array of messages and make an intermediary structure 
+  that would display the messages in presentable format like in normal chat UIs 
+
+  Map array of objects with additional attributes to used later in respective components.
+
+*/
 const Pipeline = (params) => {
   const { locale, messages, sessionUserId, handleRetryClick, handleDeletionClick, handleModerationClick } = params;
 
+  /* Step 1: Pipeline creation
+    For each message object, map component with additional attributes.
+    processed flag is false for all initially.
+  */
   let pipeline = createPipeline({ locale, messages, handleRetryClick, handleDeletionClick, handleModerationClick });
+
+  /* Step 2: Transform for Receive
+    Replace 'component' attribute with transformForReceive for all the received messages.
+    Update processed flag to true.
+    Note: 
+      Received Messages from same user are grouped together in UI
+      Two types are
+        ReceiveFirst: The first message by a user (shown in UI as box having top-left border not rounded)
+        ReceiveNormal: The remaining messages by this same user (shown in UI with all rounded borders)
+  */
   pipeline = transformForReceive({ pipeline, sessionUserId });
+
+  /* Step 3: Transform for Receive
+    Replace 'component' attribute with transformForSent for all the sent messages.
+    Update processed flag to true.
+    Note: 
+      Sent Messeges of current session user are grouped together in UI
+      Two types are
+       SentFirst: The first sent message by the current user (top-right border not rounded)
+       SentNormal: The remaining messages by current user (shown in UI with all rounded borders)
+  */
   pipeline = transformForSent({ pipeline, sessionUserId });
+
+  /* Step 4: Transform for Receive
+    Add seperator records in between to distintly seperate messages on UI with respect to date
+  */
   pipeline = addSeperatators({ pipeline });
 
+  /*
+    Step 5: Transformation done
+    Return the pipeline
+  */
   return pipeline;
 };
 
