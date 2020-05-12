@@ -72,7 +72,7 @@ const sendingMessageSuccess = (message) => {
 */
 
 
-export const fizzConnect = (roomId, userId, locale) => (dispatch) => {
+export const fizzConnect = (channelId, userId, locale) => (dispatch) => {
 
   (async () => {
     console.log("Received", userId, locale)
@@ -86,10 +86,10 @@ export const fizzConnect = (roomId, userId, locale) => (dispatch) => {
 
       try {
           if (syncRequired) { // Sync client state, always subscribe in connected listener
-              await client.chat.subscribe(roomId);
+              await client.chat.subscribe(channelId);
 
               // query the last(most recent) 50 messages published in the channel
-              let messages = await client.chat.queryLatest(roomId, 50);
+              let messages = await client.chat.queryLatest(channelId, 50);
 
               // Update messages on UI
               dispatch(messagesFetched(messages));
@@ -129,7 +129,7 @@ export const fizzConnect = (roomId, userId, locale) => (dispatch) => {
 export const sendMessage = (params = {}) => (dispatch) => {
   
   (async () => {
-    console.log("This should work", params);
+
     const messageItem = generateMessageJson(params);
   
     const { _to, _body, _nick } = messageItem;
