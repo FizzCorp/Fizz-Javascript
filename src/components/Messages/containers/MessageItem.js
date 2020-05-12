@@ -15,9 +15,9 @@ import {
   SeperatorText,
   SeperatorOuter,
   MessageContainer
-} from './Styling/Styled.js';
+} from './Styled.js';
 
-import { MESSAGE_STATE } from '../constants';
+import { MESSAGE_STATE } from '../../../constants';
 
 // exports - container
 export const Seperator = (props) => {
@@ -86,22 +86,20 @@ export class MessageItem extends React.Component {
 
   // render helpers
   renderStatus() {
-    const { message, handleRetryClick } = this.props;
-    const { status } = message;
+    const { message } = this.props;
+    const { _status } = message;
 
     let iconStyle = {};
     let eventHandler = () => { };
     let iconClass = 'small check circle green icon';
 
-    switch (status) {
+    switch (_status) {
       case MESSAGE_STATE.SENT: {
         iconClass = 'small check grey icon';
         break;
       }
       case MESSAGE_STATE.FAILED: {
-        eventHandler = handleRetryClick;
-        iconStyle = { cursor: 'pointer' };
-        iconClass = 'small undo red icon';
+        iconClass = 'small exclamation circle red icon';
         break;
       }
       case MESSAGE_STATE.PENDING: {

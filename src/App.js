@@ -11,8 +11,8 @@ import { connect } from 'react-redux';
 class App extends React.Component {
 
   componentDidMount() {
-    const { userId, locale } = this.props;
-    this.props.fizzConnect( userId, locale);
+    const { roomId, userId, locale } = this.props;
+    this.props.fizzConnect( roomId, userId, locale);
   }
 
   render () {

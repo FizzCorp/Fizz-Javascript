@@ -1,10 +1,9 @@
 //React Redux
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React from 'react'
 import moment from 'moment';
 
-// Local Imports
-import { getColorFromString } from './helpers/colors'
+//local imports
+import { getColorFromString, datesAreDifferent } from '../helpers'
 import {
   Seperator,
   SentFirst,
@@ -12,12 +11,6 @@ import {
   ReceiveFirst,
   ReceiveNormal
 } from './MessageItem.js';
-
-const datesAreDifferent = (first, second) => {
-  const firstParsed = moment(first);
-  const secondParsed = moment(second);
-  return firstParsed.dayOfYear() !== secondParsed.dayOfYear();
-};
 
 // helper methods - items / cells transformation
 const transformItem = (params) => {
@@ -132,7 +125,7 @@ const addSeperatators = (params) => {
   return temp;
 };
 
-const transformMessages = (params) => {
+const Pipeline = (params) => {
   const { locale, messages, sessionUserId, handleRetryClick, handleDeletionClick, handleModerationClick } = params;
 
   let pipeline = createPipeline({ locale, messages, handleRetryClick, handleDeletionClick, handleModerationClick });
@@ -143,49 +136,4 @@ const transformMessages = (params) => {
   return pipeline;
 };
 
-export class Messages extends Component {
-
-
-  componentDidUpdate(prevProps) {
-    const msgDiv = document.getElementsByClassName('fizz-messages')[0];
-    msgDiv.scrollTop = msgDiv.scrollHeight;
-  }
-
-  renderMessageList() {
-
-    const { locale, messages, sessionUserId, handleRetryClick, handleDeletionClick, handleModerationClick } = this.props;
-    const transformed = transformMessages({ locale, messages, sessionUserId, handleRetryClick, handleDeletionClick, handleModerationClick });
-
-    return (
-      <div className='fizz-messages'>
-        <div className='fizz-message-items ui segment'>
-          {transformed.map(item => item.component)}
-          {/* {JSON.stringify(this.props.messages)} */}
-        </div>
-      </div>
-    );
-  }
-
-  render() {
-    return (
-      <div>
-        <h3 className="ui header">{'Room: ' + this.props.roomId}</h3>
-        {this.renderMessageList()}
-      </div>
-    )
-  }
-}
-
-const mapStateToProps = (state, props) => ({
-  ...props,
-  ...state.UI,
-  // messages: Object.values(state.UI.messages)
-})
-
-const mapDispatchToProps = {
-  handleRetryClick: (/* params*/) => { },
-  handleDeletionClick: (/* params*/) => { },
-  handleModerationClick: (/* params*/) => { }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Messages)
+export default Pipeline;

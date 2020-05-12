@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 
-import {sendMessage} from '../redux/actionsCreators';
+import { sendMessage } from '../redux/actionsCreators';
 
 export class Input extends Component {
 
@@ -82,7 +82,9 @@ const mapDispatchToProps = {
 // component meta
 Input.propTypes = {
   roomId: PropTypes.string.isRequired,
-  userId: PropTypes.string.isRequired
+  userId: PropTypes.string.isRequired,
+  connected: PropTypes.bool.isRequired,
+  sendMessage: PropTypes.func.isRequired,
 };
 
 

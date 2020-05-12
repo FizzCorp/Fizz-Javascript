@@ -8,13 +8,12 @@ export const MESSAGE_DELETED = 'MESSAGE_DELETED';
 
 // REST-based Actions and their variations
 export const MESSAGES_FETCHED = 'MESSAGES_FETCHED';
-export const SENDING_MESSAGE = 'SENDING_MESSAGE';
 
-/* if further state updation needed on promise success and catch */
-/* 
-export const SENDING_MESSAGE_SUCCESS = 'SENDING_MESSAGE_SUCCESS';
+export const SENDING_MESSAGE = 'SENDING_MESSAGE';
 export const SENDING_MESSAGE_FAILURE = 'SENDING_MESSAGE_FAILURE';
-*/
+
+/* if further state updation needed on promise success */
+// export const SENDING_MESSAGE_SUCCESS = 'SENDING_MESSAGE_SUCCESS';
 
 
 export const actions = {
@@ -39,14 +38,14 @@ export const actions = {
   sendingMessage: (message) => {
     return { type: SENDING_MESSAGE, message }
   },
-  /* if further state updation needed on promise success and catch */
-  /*
-  sendingMessageSuccess: (message) => {
-    return { type: SENDING_MESSAGE_SUCCESS, message }
-  },
   sendingMessageFailure: (message) => {
     return { type: SENDING_MESSAGE_FAILURE, message }
-  }
+  },
+  /* if further state updation needed on promise success */
+  /*
+      sendingMessageSuccess: (message) => {
+        return { type: SENDING_MESSAGE_SUCCESS, message }
+      },
   */
 
 

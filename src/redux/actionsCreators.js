@@ -4,7 +4,6 @@ import moment from 'moment'
 const FizzClient  = require('fizz-client');
 const APP_ID = "751326fc-305b-4aef-950a-074c9a21d461";
 const APP_SECRET = "5c963d03-64e6-439a-b2a9-31db60dd0b34";
-const CHANNEL_ID = "global-channel";
 
 const { actions } = require('./actions');
 
@@ -25,7 +24,7 @@ const generateMessageJson = (params) => {
 
 let client;
 
-export const fizzConnect = (userId, locale) => (dispatch) => {
+export const fizzConnect = (roomId, userId, locale) => (dispatch) => {
 
   (async () => {
     console.log("Received", userId, locale)
@@ -39,10 +38,10 @@ export const fizzConnect = (userId, locale) => (dispatch) => {
 
       try {
           if (syncRequired) { // Sync client state, always subscribe in connected listener
-              await client.chat.subscribe(CHANNEL_ID);
+              await client.chat.subscribe(roomId);
 
-              // query the last(most recent) 10 messages published in the channel
-              let messages = await client.chat.queryLatest(CHANNEL_ID, 50);
+              // query the last(most recent) 50 messages published in the channel
+              let messages = await client.chat.queryLatest(roomId, 50);
 
               // Update messages on UI
               dispatch(actions.messagesFetched(messages));
@@ -87,8 +86,15 @@ export const sendMessage = (params = {}) => (dispatch) => {
   
     const { _to, _body, _nick } = messageItem;
     dispatch(actions.sendingMessage(messageItem));
+
+    try {
+      await client.chat.publishMessage(_to, _nick, _body, JSON.stringify({ _refId: messageItem._id }), true, true, true);
+    }
+    catch (err) {
+      messageItem._status = MESSAGE_STATE.FAILED
+      dispatch(actions.sendingMessageFailure(messageItem));
+    };
     
-    await client.chat.publishMessage(_to, _nick, _body, JSON.stringify({ _refId: messageItem._id }), true, true, true);
 
   })();
 

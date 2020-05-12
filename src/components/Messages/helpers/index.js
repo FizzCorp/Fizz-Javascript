@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const COLOR_CODES = ['#5c53d6', '#aa5bc4', '#25b129', '#fe9601', '#f15a2b', '#37b0d8', '#00b282', '#d845a2', '#bdc812', '#0c8771', '#0c8771'];
 
 // helper methods - utils
@@ -18,4 +20,10 @@ const hashCode = (str) => {
 export const getColorFromString = (str) => {
   const index = hashCode(str) % COLOR_CODES.length;
   return COLOR_CODES[index];
+};
+
+export const datesAreDifferent = (first, second) => {
+  const firstParsed = moment(first);
+  const secondParsed = moment(second);
+  return firstParsed.dayOfYear() !== secondParsed.dayOfYear();
 };
